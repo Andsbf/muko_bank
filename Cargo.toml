@@ -1,0 +1,22 @@
+[package]
+name = "muko_bank"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and ther definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+kafka = "0.9"
+
+# Json stuff
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# Time lib
+chrono = "0.4"
+
+# random num generator
+rand = "0.8.5"
+
+# CLI menu
+terminal-menu = "2.0.4"
