@@ -4,10 +4,10 @@ use kafka::error::Error as KafkaError;
 use crate::domain::Message;
 use crate::kafka as kafkaBank;
 
-pub fn consume_messages(message_handler: fn(Message)) -> Result<(), KafkaError> {
+pub fn consume_messages(message_handler: fn(Message), kafka_group: &str) -> Result<(), KafkaError> {
     let mut con = Consumer::from_hosts(vec![kafkaBank::DEFAULT_BROKER.to_string()])
         .with_topic(kafkaBank::DEFAULT_TOPIC.to_string())
-        .with_group(kafkaBank::DEFAULT_GROUP.to_string())
+        .with_group(kafka_group.to_string())
         .with_fallback_offset(FetchOffset::Earliest)
         .with_offset_storage(GroupOffsetStorage::Kafka)
         .create()?;

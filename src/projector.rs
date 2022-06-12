@@ -8,6 +8,14 @@ pub fn project(account_id: &str) -> Option<Account> {
     let message_handler = |message| {
         if let Message::Event(event) = message {
             match event {
+                Event::Deposited(deposited) => {
+                    if let Some(ref mut account) = account_stored {
+                        if deposited.account_id == account_id {
+                            account.balance += deposited.amount;
+                            account.sequence = deposited.sequence;
+                        }
+                    };
+                },
                 Event::Withdrawn(w) => {
                     if let Some(ref mut account) = account_stored {
                         if w.account_id == account_id {
@@ -28,7 +36,8 @@ pub fn project(account_id: &str) -> Option<Account> {
                             }
                         )
                     }
-                }
+                },
+                _ => {}
             }
         }
     };

@@ -1,13 +1,14 @@
 use kafka::client::{FetchPartition, KafkaClient};
 
 use super::super::domain::Message;
+use super::DEFAULT_BROKER;
+use super::DEFAULT_TOPIC;
 
 pub fn fecth<F>(mut message_handler: F)
 where
     F: FnMut(Message),
 {
-    let broker = "localhost:9092".to_owned();
-    let topic = "quickstart-events".to_owned();
+    let topic = DEFAULT_TOPIC.to_owned();
     let partition = 0;
     let offset = 0;
 
@@ -16,15 +17,15 @@ where
     //     broker, topic, partition, offset
     // );
 
-    let mut client = KafkaClient::new(vec![broker.to_owned()]);
+    let mut client = KafkaClient::new(vec![DEFAULT_BROKER.to_owned()]);
     if let Err(e) = client.load_metadata_all() {
-        println!("Failed to load metadata from {}: {}", broker, e);
+        println!("Failed to load metadata from {}: {}", DEFAULT_BROKER, e);
     }
 
     // ~ make sure to print out a warning message when the target
     // topic does not yet exist
     if !client.topics().contains(&topic) {
-        println!("No such topic at {}: {}", broker, topic);
+        println!("No such topic at {}: {}", DEFAULT_BROKER, topic);
     }
 
     match client.fetch_messages(&[FetchPartition::new(&topic, partition, offset)]) {

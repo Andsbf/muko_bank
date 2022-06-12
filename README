@@ -1,3 +1,31 @@
 * Todo
-  - [ ] Cache projections
+  - [ ] Cache projections, this is half done in a rudimentary
   - [ ] Remove all unwraps
+  - [ ] Dockerize everything, WIP, doing the network dancing
+
+* redis commander:
+  #+begin_src
+redis-commander
+  #+end_src
+
+*  kafka barebones
+  kafka folder: /Users/ando/kafka/kafka_2.13-3.2.0
+
+start redis-command
+
+  starting kafka
+  #+begin_src baqsh
+bin/zookeeper-serqver-start.sh config/zookeeper.properties
+bin/kafka-server-start.sh config/server.properties
+  #+end_src
+
+
+  consumer
+  #+begin_src  bash
+bin/kafka-console-producer.sh --topic quickstart-events --bootstrap-server localhost:9092
+  #+end_src
+
+  producer
+  #+begin_src
+ bin/kafka-console-consumer.sh --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
+  #+end_src

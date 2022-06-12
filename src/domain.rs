@@ -3,31 +3,74 @@ use serde_json::json;
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
-pub struct Withdraw {
+pub struct Deposit {
+    pub id: String,
     pub account_id: String,
     pub amount: u32,
     pub time: String,
     pub sequence: u32,
 }
 
-impl Withdraw {
+impl Deposit {
     pub fn as_json(&self) -> String {
-        json!({
-            "Command": {
-                "Withdraw": {
-                    "account_id": self.account_id,
-                    "amount": self.amount,
-                    "time": self.time,
-                    "sequence": self.sequence,
-                }
-            }
-        }).to_string()
+        json!({ "Command": { "Deposit": self } }).to_string()
     }
 }
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
+pub struct Deposited {
+    pub id: String,
+    pub deposit_id: String,
+    pub account_id: String,
+    pub amount: u32,
+    pub time: String,
+    pub sequence: u32,
+}
+
+impl Deposited {
+    pub fn as_json(&self) -> String {
+        json!({
+            "Event": { "Deposited": self } }).to_string()
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
+pub struct Withdraw {
+    pub id: String,
+    pub account_id: String,
+    pub amount: u32,
+    pub time: String,
+    pub sequence: u32,
+}
+
+
+impl Withdraw {
+    pub fn as_json(&self) -> String {
+        json!({ "Command": { "Withdraw": self } }).to_string()
+    }
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct WithdrawInsufficientFunds {
+    pub id: String,
+    pub withdraw_id: String,
+    pub time: String,
+    pub sequence: u32,
+}
+
+impl WithdrawInsufficientFunds {
+    pub fn as_json(&self) -> String {
+        json!({ "Event": { "WithdrawInsufficientFunds": self } }).to_string()
+    }
+}
+
+
+#[derive(Serialize, Deserialize)]
+#[derive(Debug)]
 pub struct Open {
+    pub id: String,
     pub account_id: String,
     pub name: String,
     pub balance: u32,
@@ -36,16 +79,7 @@ pub struct Open {
 
 impl Open {
     pub fn as_json(&self) -> String {
-        json!({
-            "Command": {
-                "Open": {
-                    "account_id": self.account_id,
-                    "name": self.name,
-                    "balance": self.balance,
-                    "time": self.time
-                }
-            }
-        }).to_string()
+        json!({ "Command": { "Open": self } }).to_string()
     }
 }
 
@@ -53,12 +87,15 @@ impl Open {
 #[derive(Debug)]
 pub enum Command {
     Open(Open),
-    Withdraw(Withdraw)
+    Deposit(Deposit),
+    Withdraw(Withdraw),
 }
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Withdrawn {
+    pub id: String,
+    pub withdraw_id: String,
     pub account_id: String,
     pub amount: u32,
     pub time: String,
@@ -68,21 +105,15 @@ pub struct Withdrawn {
 impl Withdrawn {
     pub fn as_json(&self) -> String {
         json!({
-            "Event": {
-                "Withdrawn": {
-                    "account_id": self.account_id,
-                    "amount": self.amount,
-                    "time": self.time,
-                    "sequence": self.sequence
-                }
-            }
-        }).to_string()
+            "Event": { "Withdrawn": self } }).to_string()
     }
 }
 
 #[derive(Serialize, Deserialize)]
 #[derive(Debug)]
 pub struct Opened {
+    pub id: String,
+    pub open_id: String,
     pub account_id: String,
     pub name: String,
     pub balance: u32,
@@ -93,32 +124,26 @@ pub struct Opened {
 impl Opened {
     pub fn as_json(&self) -> String {
         json!({
-            "Event": {
-                "Opened": {
-                    "account_id": self.account_id,
-                    "name": self.name,
-                    "balance": self.balance,
-                    "time": self.time,
-                    "sequence": self.sequence
-                }
-            }
-        }).to_string()
+            "Event": { "Opened": self } }).to_string()
     }
 }
 
 #[derive(Serialize, Deserialize)]
 pub enum Event {
     Opened(Opened),
-    Withdrawn(Withdrawn)
+    Deposited(Deposited),
+    Withdrawn(Withdrawn),
+    WithdrawInsufficientFunds(WithdrawInsufficientFunds),
 }
 
 #[derive(Serialize, Deserialize)]
 pub enum Message {
     Event(Event),
-    Command(Command)
+    Command(Command),
 }
 
 #[derive(Debug)]
+#[derive(Serialize, Deserialize)]
 pub struct Account {
     pub id: String,
     pub name: String,
